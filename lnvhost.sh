@@ -1,3 +1,8 @@
+if [ `whoami` != root ]; then
+	echo 'Error: root only.'
+	exit 1;
+fi
+
 if [ -z $1 ] || \
 	[ -z $2 ]; then
 	echo 'Usage: '$0' [Directory] [Shortname]'

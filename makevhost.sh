@@ -1,3 +1,7 @@
+if [ `whoami` != root ]; then
+	echo 'Error: root only.'
+	exit 1;
+fi
 if [ -z $1 ] || \
 	[ -z $2 ] || \
 	[ -z $3 ]; then
