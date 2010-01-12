@@ -84,6 +84,11 @@ echo '<VirtualHost *>
 		Order allow,deny
 		allow from all
 	</Directory>
+	<Directorymatch "^/.*/.(hg|svn|git)/">
+		Order deny,allow
+		Deny from all
+	</Directorymatch>
+
 	ErrorLog '$1'/logs/error.log
 
 	# Possible values include: debug, info, notice, warn, error, crit,
