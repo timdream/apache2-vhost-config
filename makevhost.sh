@@ -66,7 +66,7 @@ sudo touch $1/logs/access-redirect.log
 echo '* vhost conf ...'
 
 #site script
-echo '<VirtualHost *>
+echo '<VirtualHost *:80>
 	ServerName '$3'
 	#ServerAlias '$3'
 	ServerAdmin nobody@'$3'
@@ -101,7 +101,7 @@ echo '<VirtualHost *>
 sudo ln -s $1/vhost.conf /etc/apache2/sites-available/$2
 
 #redirection site script
-echo '<VirtualHost *>
+echo '<VirtualHost *:80>
 
 	# redirect vhost that issue 301 redirection to the real site.
 	# Remember to edit awstats-redirect.conf
