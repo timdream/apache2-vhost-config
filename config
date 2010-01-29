@@ -71,6 +71,12 @@ ft_min_word_len = 1' | sudo tee /etc/mysql/conf.d/ft_min_word_len.cnf > /dev/nul
 sudo /etc/init.d/mysql restart
 sudo ln -s /usr/share/phpmyadmin /var/www/phpmyadmin
 
+read -p 'php5 cgi local config... <Enter or Ctrl+C>'
+echo 'memory_limit = 256M
+post_max_size = 2047M
+upload_max_filesize = 2047M
+' | sudo tee /etc/php5/conf.d/local.ini > /dev/null
+
 echo 'Things to be done:
 * apache2 config
 ** + ServerName localhost
