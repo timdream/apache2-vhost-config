@@ -1,20 +1,26 @@
+DIR=$1
+SHORTNAME=$2
+FQDN=$3
+
+VHOSTPARM='*:80'
+
 if [ `whoami` != root ]; then
 	echo 'Error: root only.'
 	exit 1;
 fi
-if [ -z $1 ] || \
-	[ -z $2 ] || \
-	[ -z $3 ]; then
+if [ -z $DIR ] || \
+	[ -z $SHORTNAME ] || \
+	[ -z $FQDN ]; then
 	echo 'Usage: '$0' [Directory] [Shortname] [FQDN]'
 	exit 1;
 fi
 
-if [ -e /etc/apache2/sites-available/$2 ] || \
-	[ -e /etc/apache2/sites-available/$2-redirect ] || \
-	[ -e /etc/logrotate.d/apache2-$2 ] || \
-	[ -e /etc/awstats/awstats.$2.conf ] || \
-	[ -e /etc/awstats/awstats.$2-redirect.conf ] || \
-	[ -e /etc/cron.d/awstats-$2 ] ; then
+if [ -e /etc/apache2/sites-available/$SHORTNAME ] || \
+	[ -e /etc/apache2/sites-available/$SHORTNAME-redirect ] || \
+	[ -e /etc/logrotate.d/apache2-$SHORTNAME ] || \
+	[ -e /etc/awstats/awstats.$SHORTNAME.conf ] || \
+	[ -e /etc/awstats/awstats.$SHORTNAME-redirect.conf ] || \
+	[ -e /etc/cron.d/awstats-$SHORTNAME ] ; then
 	echo 'FQDN or shortname used. Please change another one.'
 	exit 1;
 fi
@@ -25,26 +31,26 @@ echo '
   This script helps you build a virtual host fast
 *****************************************************************************
 Your configration:
-  + Directory: '$1'
+  + Directory: '$DIR'
      * must be a fill path WITHOUT trailing slash.
-     * Root dir to server will be '$1'/www
-     * Logs will go to '$1'/logs, feel free to replace 
+     * Root dir to server will be '$DIR'/www
+     * Logs will go to '$DIR'/logs, feel free to replace 
        it with a softlink dir.
-     * Awstats log will go to '$1'/awstats, also can be softlinked.
-  + Short name: '$2'
+     * Awstats log will go to '$DIR'/awstats, also can be softlinked.
+  + Short name: '$SHORTNAME'
 
-When complete, script will enable site '$2', 
-another site conf called '$2'-redirect will also be created,
+When complete, script will enable site '$SHORTNAME', 
+another site conf called '$SHORTNAME'-redirect will also be created,
 which will send 301 to the real site.
 
 To remove generated site, run rmvhost.sh.
 
 '
-if [ -e $1/awstats.conf ] || \
-	[ -e $1/awstats-cron ] || \
-	[ -e $1/logrotate ] || \
-	[ -e $1/vhost.conf ] || \
-	[ -e $1/vhost-redirect.conf ] ; then
+if [ -e $DIR/awstats.conf ] || \
+	[ -e $DIR/awstats-cron ] || \
+	[ -e $DIR/logrotate ] || \
+	[ -e $DIR/vhost.conf ] || \
+	[ -e $DIR/vhost-redirect.conf ] ; then
 	echo '** WARNING **: There will be config file(s) being overwritten.
 
 '
@@ -56,28 +62,28 @@ read -p 'Enter to continue. <Enter or Ctrl+C>
 
 echo '* mkdir dir ...'
 
-sudo mkdir -p $1
-sudo mkdir -p $1/www
-sudo mkdir -p $1/awstats
-sudo mkdir -p $1/logs
-sudo touch $1/logs/access.log
-sudo touch $1/logs/access-redirect.log
+sudo mkdir -p $DIR
+sudo mkdir -p $DIR/www
+sudo mkdir -p $DIR/awstats
+sudo mkdir -p $DIR/logs
+sudo touch $DIR/logs/access.log
+sudo touch $DIR/logs/access-redirect.log
 
 echo '* vhost conf ...'
 
 #site script
-echo '<VirtualHost *:80>
-	ServerName '$3'
-	#ServerAlias '$3'
-	ServerAdmin nobody@'$3'
+echo '<VirtualHost '$VHOSTPARM'>
+	ServerName '$FQDN'
+	#ServerAlias '$FQDN'
+	ServerAdmin nobody@'$FQDN'
 
-	DocumentRoot '$1'/www
+	DocumentRoot '$DIR'/www
 
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride None
 	</Directory>
-	<Directory '$1'/www/>
+	<Directory '$DIR'/www/>
 		Options FollowSymLinks ExecCGI
 		# Remove ExecCGI if you do not need php
 		AllowOverride All
@@ -89,56 +95,56 @@ echo '<VirtualHost *:80>
 		Deny from all
 	</Directorymatch>
 
-	ErrorLog '$1'/logs/error.log
+	ErrorLog '$DIR'/logs/error.log
 
 	# Possible values include: debug, info, notice, warn, error, crit,
 	# alert, emerg.
 	LogLevel warn
 
-	CustomLog '$1'/logs/access.log combined
+	CustomLog '$DIR'/logs/access.log combined
 
-</VirtualHost>' | sudo tee $1/vhost.conf > /dev/null
-sudo ln -s $1/vhost.conf /etc/apache2/sites-available/$2
+</VirtualHost>' | sudo tee $DIR/vhost.conf > /dev/null
+sudo ln -s $DIR/vhost.conf /etc/apache2/sites-available/$SHORTNAME
 
 #redirection site script
-echo '<VirtualHost *:80>
+echo '<VirtualHost '$VHOSTPARM'>
 
 	# redirect vhost that issue 301 redirection to the real site.
 	# Remember to edit awstats-redirect.conf
 	
-	#ServerName '$3'
-	#ServerAlias '$3' 
-	ServerAdmin nobody@'$3'
+	#ServerName '$FQDN'
+	#ServerAlias '$FQDN' 
+	ServerAdmin nobody@'$FQDN'
 	
-	DocumentRoot '$1'/www
+	DocumentRoot '$DIR'/www
 
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride None
 	</Directory>
-	<Directory '$1'/www/>
+	<Directory '$DIR'/www/>
 		Options FollowSymLinks
 		AllowOverride All
 		Order allow,deny
 		allow from all
 
-		RedirectMatch permanent ^/(.*)$ http://'$3'/$1
+		RedirectMatch permanent ^/(.*)$ http://'$FQDN'/$DIR
 	</Directory>
-	ErrorLog '$1'/logs/error-redirect.log
+	ErrorLog '$DIR'/logs/error-redirect.log
 
 	# Possible values include: debug, info, notice, warn, error, crit,
 	# alert, emerg.
 	LogLevel warn
 
-	CustomLog '$1'/logs/access-redirect.log combined
+	CustomLog '$DIR'/logs/access-redirect.log combined
 
-</VirtualHost>' | sudo tee $1/vhost-redirect.conf > /dev/null
-sudo ln -s $1/vhost-redirect.conf /etc/apache2/sites-available/$2-redirect
+</VirtualHost>' | sudo tee $DIR/vhost-redirect.conf > /dev/null
+sudo ln -s $DIR/vhost-redirect.conf /etc/apache2/sites-available/$SHORTNAME-redirect
 
 
 echo '* logrotate ...'
 
-echo $1'/logs/*.log {
+echo $DIR'/logs/*.log {
 	weekly
 	missingok
 	rotate 52
@@ -148,47 +154,47 @@ echo $1'/logs/*.log {
 	create 644 root root
 	sharedscripts
 	prerotate
-		sudo -u root /usr/lib/cgi-bin/awstats.pl -update -config='$2'
-		sudo -u root /usr/lib/cgi-bin/awstats.pl -update -config='$2'-redirect
+		sudo -u root /usr/lib/cgi-bin/awstats.pl -update -config='$SHORTNAME'
+		sudo -u root /usr/lib/cgi-bin/awstats.pl -update -config='$SHORTNAME'-redirect
 	endscript
 	postrotate
 		if [ -f /var/run/apache2.pid ]; then
 			/etc/init.d/apache2 restart > /dev/null
 		fi
 	endscript
-}' | sudo tee $1/logrotate > /dev/null
-sudo ln -s $1/logrotate /etc/logrotate.d/apache2-$2
+}' | sudo tee $DIR/logrotate > /dev/null
+sudo ln -s $DIR/logrotate /etc/logrotate.d/apache2-$SHORTNAME
 
 echo '* awststs ...'
 
 echo 'Include "/etc/awstats/awstats.conf"
-SiteDomain="'$3'"
-LogFile="'$1'/logs/access.log"
+SiteDomain="'$FQDN'"
+LogFile="'$DIR'/logs/access.log"
 LogFormat=1
-DirData="'$1'/awstats"
-HostAliases="'$3' localhost 127.0.0.1"
-' | sudo tee $1/awstats.conf > /dev/null
-sudo ln -s $1/awstats.conf /etc/awstats/awstats.$2.conf
+DirData="'$DIR'/awstats"
+HostAliases="'$FQDN' localhost 127.0.0.1"
+' | sudo tee $DIR/awstats.conf > /dev/null
+sudo ln -s $DIR/awstats.conf /etc/awstats/awstats.$SHORTNAME.conf
 
 echo 'Include "/etc/awstats/awstats.conf"
-SiteDomain="'$3'"
-LogFile="'$1'/logs/access-redirect.log"
+SiteDomain="'$FQDN'"
+LogFile="'$DIR'/logs/access-redirect.log"
 LogFormat=1
-DirData="'$1'/awstats"
-HostAliases="'$3' localhost 127.0.0.1"
-' | sudo tee $1/awstats-redirect.conf > /dev/null
-sudo ln -s $1/awstats-redirect.conf /etc/awstats/awstats.$2-redirect.conf
+DirData="'$DIR'/awstats"
+HostAliases="'$FQDN' localhost 127.0.0.1"
+' | sudo tee $DIR/awstats-redirect.conf > /dev/null
+sudo ln -s $DIR/awstats-redirect.conf /etc/awstats/awstats.$SHORTNAME-redirect.conf
 
 #awstats crontab
-echo $(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$2'.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$2' -update >/dev/null
-'$(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$2'-redirect.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$2'-redirect -update >/dev/null' | sudo tee $1/awstats-cron > /dev/null
-sudo ln -s $1/awstats-cron /etc/cron.d/awstats-$2
+echo $(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME' -update >/dev/null
+'$(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'-redirect.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME'-redirect -update >/dev/null' | sudo tee $DIR/awstats-cron > /dev/null
+sudo ln -s $DIR/awstats-cron /etc/cron.d/awstats-$SHORTNAME
 
 #remove awstats nested include
 cat /etc/awstats/awstats.conf | sudo sed -i -e 's/^Include/#Include/' /etc/awstats/awstats.conf
 
 echo '* enable site ...'
-sudo a2ensite $2 > /dev/null
+sudo a2ensite $SHORTNAME > /dev/null
 
 echo '
 
@@ -196,7 +202,7 @@ Done.
 Please 
    sudo apache2ctl graceful
 to load the config of the website gracefully.
-You might want to edit '$1'/vhost.conf before doing that,
+You might want to edit '$DIR'/vhost.conf before doing that,
 depends on your application configration.
 
 Regards,
