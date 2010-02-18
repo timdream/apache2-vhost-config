@@ -1,0 +1,47 @@
+
+ mkvhost.sh / rmvhost.sh / lnvhost.sh
+
+ A set of scripts to do one-stroke virtual host setup with apache2 package
+ in Debian/Ubuntu.
+
+ Author: Timothy Chien [:timdream] <timdream@gmail.com>
+
+ License: GPLv2.
+ *Please*: do create you own version and publish it, but DO claim your
+ responsibility of authorship.
+
+ ====
+
+ Usage:
+
+ * mkvhost.sh - making virtual host.
+
+   Upon running, mkvhost.sh will:
+
+   * create vhost directories and all conf files.
+   * Set up two virtual hosts "shortname" and "shortname-redirect". The later 
+     one is good for blind redirection, e.g. www.domain.tld -> domain.tld.
+   * Set up logrotate, awstat and their corntab.
+
+ * rmvhost.sh - remove conf file symbolic links of the vhost created by 
+   mkvhost.sh.
+
+   After running, to permentently delete the virtual host, do 'rm -R ./vhost/'
+
+ * lnvhost.sh - recreate links.
+
+ * config
+
+    **Experimental** Setup LAMP enviroment on a bare Ubuntu system.
+
+ ====
+
+  Known issue:
+
+  * apache2 package changed virtual host setting from <VirtualHost *> to 
+    <VirtualHost *:80> after version 2.2.9-8. Do modify mkvhost.sh accordingly
+    BEFORE creating virtual hosts.
+
+  * "read" is broken in these scripts.
+
+ ====
