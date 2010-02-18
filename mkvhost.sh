@@ -65,6 +65,8 @@ echo '* mkdir dir ...'
 
 sudo mkdir -p $DIR
 sudo mkdir -p $DIR/www
+sudo mkdir -p $DIR/var
+sudo chown -R www-data:www-data $DIR/var
 sudo mkdir -p $DIR/awstats
 sudo mkdir -p $DIR/logs
 sudo touch $DIR/logs/access.log
