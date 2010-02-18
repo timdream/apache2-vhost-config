@@ -3,6 +3,7 @@ SHORTNAME=$2
 FQDN=$3
 
 VHOSTPARM='*:80'
+#VHOSTPARM='*'
 
 if [ `whoami` != root ]; then
 	echo 'Error: root only.'
@@ -32,7 +33,7 @@ echo '
 *****************************************************************************
 Your configration:
   + Directory: '$DIR'
-     * must be a fill path WITHOUT trailing slash.
+     * must be a full path WITHOUT trailing slash.
      * Root dir to server will be '$DIR'/www
      * Logs will go to '$DIR'/logs, feel free to replace 
        it with a softlink dir.
