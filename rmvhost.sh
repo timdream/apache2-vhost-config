@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ `whoami` != root ]; then
 	echo 'Error: root only.'
 	exit 1;
@@ -50,8 +52,7 @@ To remove the site completely, rm -R '$1'
 after running this script.
 
 Press Ctrl+C to escape if incorrect.'
-read -p 'Enter to continue. <Enter or Ctrl+C>
-'
+read -p 'Enter to continue. <Enter or Ctrl+C>'
 
 sudo a2dissite $2 > /dev/null
 sudo a2dissite $2-redirect > /dev/null

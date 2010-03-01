@@ -41,7 +41,4 @@
   * apache2 package changed virtual host setting from <VirtualHost *> to 
     <VirtualHost *:80> after version 2.2.9-8. Do modify mkvhost.sh accordingly
     BEFORE creating virtual hosts.
-
-  * "read" is broken in these scripts.
-
- ====
+ 

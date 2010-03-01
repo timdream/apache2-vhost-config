@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ `whoami` != root ]; then
 	echo 'Error: root only.'
 	exit 1;
@@ -38,8 +40,7 @@ Your configration:
 To remove generated site, run rmvhost.sh.
 
 Press Ctrl+C to escape if incorrect.'
-read -p 'Enter to continue. <Enter or Ctrl+C>
-'
+read -p 'Enter to continue. <Enter or Ctrl+C>'
 
 sudo ln -s $1/vhost.conf /etc/apache2/sites-available/$2
 sudo ln -s $1/vhost-redirect.conf /etc/apache2/sites-available/$2-redirect

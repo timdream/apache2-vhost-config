@@ -1,3 +1,5 @@
+#!/bin/bash
+
 DIR=$1
 SHORTNAME=$2
 FQDN=$3
@@ -58,8 +60,7 @@ if [ -e $DIR/awstats.conf ] || \
 fi
 
 echo 'Press Ctrl+C to escape if incorrect.'
-read -p 'Enter to continue. <Enter or Ctrl+C>
-'
+read -p 'Enter to continue. <Enter or Ctrl+C>'
 
 echo '* mkdir dir ...'
 
