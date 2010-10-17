@@ -169,33 +169,37 @@ echo $DIR'/logs/*.log {
 }' | sudo tee $DIR/logrotate > /dev/null
 sudo ln -s $DIR/logrotate /etc/logrotate.d/apache2-$SHORTNAME
 
-echo '* awststs ...'
+if [ -d /etc/awstats ] ; then
 
-echo 'Include "/etc/awstats/awstats.conf"
+	echo '* awststs ...'
+
+	echo 'Include "/etc/awstats/awstats.conf"
 SiteDomain="'$FQDN'"
 LogFile="'$DIR'/logs/access.log"
 LogFormat=1
 DirData="'$DIR'/awstats"
 HostAliases="'$FQDN' localhost 127.0.0.1"
 ' | sudo tee $DIR/awstats.conf > /dev/null
-sudo ln -s $DIR/awstats.conf /etc/awstats/awstats.$SHORTNAME.conf
+	sudo ln -s $DIR/awstats.conf /etc/awstats/awstats.$SHORTNAME.conf
 
-echo 'Include "/etc/awstats/awstats.conf"
+	echo 'Include "/etc/awstats/awstats.conf"
 SiteDomain="'$FQDN'"
 LogFile="'$DIR'/logs/access-redirect.log"
 LogFormat=1
 DirData="'$DIR'/awstats"
 HostAliases="'$FQDN' localhost 127.0.0.1"
 ' | sudo tee $DIR/awstats-redirect.conf > /dev/null
-sudo ln -s $DIR/awstats-redirect.conf /etc/awstats/awstats.$SHORTNAME-redirect.conf
+	sudo ln -s $DIR/awstats-redirect.conf /etc/awstats/awstats.$SHORTNAME-redirect.conf
 
-#awstats crontab
-echo $(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME' -update >/dev/null
+	#awstats crontab
+	echo $(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME' -update >/dev/null
 '$(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'-redirect.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME'-redirect -update >/dev/null' | sudo tee $DIR/awstats-cron > /dev/null
-sudo ln -s $DIR/awstats-cron /etc/cron.d/awstats-$SHORTNAME
+	sudo ln -s $DIR/awstats-cron /etc/cron.d/awstats-$SHORTNAME
 
-#remove awstats nested include
-cat /etc/awstats/awstats.conf | sudo sed -i -e 's/^Include/#Include/' /etc/awstats/awstats.conf
+	#remove awstats nested include
+	cat /etc/awstats/awstats.conf | sudo sed -i -e 's/^Include/#Include/' /etc/awstats/awstats.conf
+
+fi
 
 echo '* enable site ...'
 sudo a2ensite $SHORTNAME > /dev/null

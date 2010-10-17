@@ -45,9 +45,11 @@ read -p 'Enter to continue. <Enter or Ctrl+C>'
 sudo ln -s $1/vhost.conf /etc/apache2/sites-available/$2
 sudo ln -s $1/vhost-redirect.conf /etc/apache2/sites-available/$2-redirect
 sudo ln -s $1/logrotate /etc/logrotate.d/apache2-$2
-sudo ln -s $1/awstats.conf /etc/awstats/awstats.$2.conf
-sudo ln -s $1/awstats.conf /etc/awstats/awstats.$2-redirect.conf
-sudo ln -s $1/awstats-cron /etc/cron.d/awstats-$2
+if [ -d /etc/awstats ] ; then
+	sudo ln -s $1/awstats.conf /etc/awstats/awstats.$2.conf
+	sudo ln -s $1/awstats.conf /etc/awstats/awstats.$2-redirect.conf
+	sudo ln -s $1/awstats-cron /etc/cron.d/awstats-$2
+fi
 
 sudo a2ensite $2 > /dev/null
 
