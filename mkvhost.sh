@@ -158,8 +158,8 @@ echo $DIR'/logs/*.log {
 	create 644 root root
 	sharedscripts
 	prerotate
-		/usr/lib/cgi-bin/awstats.pl -update -config='$SHORTNAME'
-		/usr/lib/cgi-bin/awstats.pl -update -config='$SHORTNAME'-redirect
+		[ -d /etc/awstats ] && /usr/lib/cgi-bin/awstats.pl -update -config='$SHORTNAME'
+		[ -d /etc/awstats ] && /usr/lib/cgi-bin/awstats.pl -update -config='$SHORTNAME'-redirect
 	endscript
 	postrotate
 		if [ -f /var/run/apache2.pid ]; then
