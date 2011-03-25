@@ -54,18 +54,18 @@ after running this script.
 Press Ctrl+C to escape if incorrect.'
 read -p 'Enter to continue. <Enter or Ctrl+C>'
 
-sudo a2dissite $2 > /dev/null
-sudo a2dissite $2-redirect > /dev/null
+a2dissite $2 > /dev/null
+a2dissite $2-redirect > /dev/null
 
-[ -h /etc/apache2/sites-available/$2 ] && sudo rm /etc/apache2/sites-available/$2
-[ -h /etc/apache2/sites-available/$2-redirect ] && sudo rm /etc/apache2/sites-available/$2-redirect
-[ -h /etc/logrotate.d/apache2-$2 ] && sudo rm /etc/logrotate.d/apache2-$2
-[ -h /etc/awstats/awstats.$2.conf ] && sudo rm /etc/awstats/awstats.$2.conf
-[ -h /etc/awstats/awstats.$2-redirect.conf ] && sudo rm /etc/awstats/awstats.$2-redirect.conf
-[ -h /etc/cron.d/awstats-$2 ] && sudo rm /etc/cron.d/awstats-$2
+[ -h /etc/apache2/sites-available/$2 ] && rm /etc/apache2/sites-available/$2
+[ -h /etc/apache2/sites-available/$2-redirect ] && rm /etc/apache2/sites-available/$2-redirect
+[ -h /etc/logrotate.d/apache2-$2 ] && rm /etc/logrotate.d/apache2-$2
+[ -h /etc/awstats/awstats.$2.conf ] && rm /etc/awstats/awstats.$2.conf
+[ -h /etc/awstats/awstats.$2-redirect.conf ] && rm /etc/awstats/awstats.$2-redirect.conf
+[ -h /etc/cron.d/awstats-$2 ] && rm /etc/cron.d/awstats-$2
 
 echo 'Done.
 Please 
-   sudo apache2ctl graceful
+   apache2ctl graceful
 to load the config of the website gracefully.
 '

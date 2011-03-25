@@ -64,14 +64,14 @@ read -p 'Enter to continue. <Enter or Ctrl+C>'
 
 echo '* mkdir dir ...'
 
-sudo mkdir -p $DIR
-sudo mkdir -p $DIR/www
-sudo mkdir -p $DIR/var
-sudo chown -R www-data:www-data $DIR/var
-sudo mkdir -p $DIR/awstats
-sudo mkdir -p $DIR/logs
-sudo touch $DIR/logs/access.log
-sudo touch $DIR/logs/access-redirect.log
+mkdir -p $DIR
+mkdir -p $DIR/www
+mkdir -p $DIR/var
+chown -R www-data:www-data $DIR/var
+mkdir -p $DIR/awstats
+mkdir -p $DIR/logs
+touch $DIR/logs/access.log
+touch $DIR/logs/access-redirect.log
 
 echo '* vhost conf ...'
 
@@ -107,8 +107,8 @@ echo '<VirtualHost '$VHOSTPARM'>
 
 	CustomLog '$DIR'/logs/access.log combined
 
-</VirtualHost>' | sudo tee $DIR/vhost.conf > /dev/null
-sudo ln -s $DIR/vhost.conf /etc/apache2/sites-available/$SHORTNAME
+</VirtualHost>' | tee $DIR/vhost.conf > /dev/null
+ln -s $DIR/vhost.conf /etc/apache2/sites-available/$SHORTNAME
 
 #redirection site script
 echo '<VirtualHost '$VHOSTPARM'>
@@ -142,8 +142,8 @@ echo '<VirtualHost '$VHOSTPARM'>
 
 	CustomLog '$DIR'/logs/access-redirect.log combined
 
-</VirtualHost>' | sudo tee $DIR/vhost-redirect.conf > /dev/null
-sudo ln -s $DIR/vhost-redirect.conf /etc/apache2/sites-available/$SHORTNAME-redirect
+</VirtualHost>' | tee $DIR/vhost-redirect.conf > /dev/null
+ln -s $DIR/vhost-redirect.conf /etc/apache2/sites-available/$SHORTNAME-redirect
 
 
 echo '* logrotate ...'
@@ -158,16 +158,16 @@ echo $DIR'/logs/*.log {
 	create 644 root root
 	sharedscripts
 	prerotate
-		sudo -u root /usr/lib/cgi-bin/awstats.pl -update -config='$SHORTNAME'
-		sudo -u root /usr/lib/cgi-bin/awstats.pl -update -config='$SHORTNAME'-redirect
+		/usr/lib/cgi-bin/awstats.pl -update -config='$SHORTNAME'
+		/usr/lib/cgi-bin/awstats.pl -update -config='$SHORTNAME'-redirect
 	endscript
 	postrotate
 		if [ -f /var/run/apache2.pid ]; then
 			/etc/init.d/apache2 restart > /dev/null
 		fi
 	endscript
-}' | sudo tee $DIR/logrotate > /dev/null
-sudo ln -s $DIR/logrotate /etc/logrotate.d/apache2-$SHORTNAME
+}' | tee $DIR/logrotate > /dev/null
+ln -s $DIR/logrotate /etc/logrotate.d/apache2-$SHORTNAME
 
 if [ -d /etc/awstats ] ; then
 
@@ -179,8 +179,8 @@ LogFile="'$DIR'/logs/access.log"
 LogFormat=1
 DirData="'$DIR'/awstats"
 HostAliases="'$FQDN' localhost 127.0.0.1"
-' | sudo tee $DIR/awstats.conf > /dev/null
-	sudo ln -s $DIR/awstats.conf /etc/awstats/awstats.$SHORTNAME.conf
+' | tee $DIR/awstats.conf > /dev/null
+	ln -s $DIR/awstats.conf /etc/awstats/awstats.$SHORTNAME.conf
 
 	echo 'Include "/etc/awstats/awstats.conf"
 SiteDomain="'$FQDN'"
@@ -188,27 +188,27 @@ LogFile="'$DIR'/logs/access-redirect.log"
 LogFormat=1
 DirData="'$DIR'/awstats"
 HostAliases="'$FQDN' localhost 127.0.0.1"
-' | sudo tee $DIR/awstats-redirect.conf > /dev/null
-	sudo ln -s $DIR/awstats-redirect.conf /etc/awstats/awstats.$SHORTNAME-redirect.conf
+' | tee $DIR/awstats-redirect.conf > /dev/null
+	ln -s $DIR/awstats-redirect.conf /etc/awstats/awstats.$SHORTNAME-redirect.conf
 
 	#awstats crontab
 	echo $(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME' -update >/dev/null
-'$(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'-redirect.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME'-redirect -update >/dev/null' | sudo tee $DIR/awstats-cron > /dev/null
-	sudo ln -s $DIR/awstats-cron /etc/cron.d/awstats-$SHORTNAME
+'$(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'-redirect.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME'-redirect -update >/dev/null' | tee $DIR/awstats-cron > /dev/null
+	ln -s $DIR/awstats-cron /etc/cron.d/awstats-$SHORTNAME
 
 	#remove awstats nested include
-	cat /etc/awstats/awstats.conf | sudo sed -i -e 's/^Include/#Include/' /etc/awstats/awstats.conf
+	cat /etc/awstats/awstats.conf | sed -i -e 's/^Include/#Include/' /etc/awstats/awstats.conf
 
 fi
 
 echo '* enable site ...'
-sudo a2ensite $SHORTNAME > /dev/null
+a2ensite $SHORTNAME > /dev/null
 
 echo '
 
 Done.
 Please 
-   sudo apache2ctl graceful
+   apache2ctl graceful
 to load the config of the website gracefully.
 You might want to edit '$DIR'/vhost.conf before doing that,
 depends on your application configration.

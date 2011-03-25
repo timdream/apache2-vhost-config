@@ -42,19 +42,19 @@ To remove generated site, run rmvhost.sh.
 Press Ctrl+C to escape if incorrect.'
 read -p 'Enter to continue. <Enter or Ctrl+C>'
 
-sudo ln -s $1/vhost.conf /etc/apache2/sites-available/$2
-sudo ln -s $1/vhost-redirect.conf /etc/apache2/sites-available/$2-redirect
-sudo ln -s $1/logrotate /etc/logrotate.d/apache2-$2
+ln -s $1/vhost.conf /etc/apache2/sites-available/$2
+ln -s $1/vhost-redirect.conf /etc/apache2/sites-available/$2-redirect
+ln -s $1/logrotate /etc/logrotate.d/apache2-$2
 if [ -d /etc/awstats ] ; then
-	sudo ln -s $1/awstats.conf /etc/awstats/awstats.$2.conf
-	sudo ln -s $1/awstats.conf /etc/awstats/awstats.$2-redirect.conf
-	sudo ln -s $1/awstats-cron /etc/cron.d/awstats-$2
+	ln -s $1/awstats.conf /etc/awstats/awstats.$2.conf
+	ln -s $1/awstats.conf /etc/awstats/awstats.$2-redirect.conf
+	ln -s $1/awstats-cron /etc/cron.d/awstats-$2
 fi
 
-sudo a2ensite $2 > /dev/null
+a2ensite $2 > /dev/null
 
 echo 'Done.
 Please 
-   sudo apache2ctl graceful
+   apache2ctl graceful
 to load the config of the website gracefully.
 '
