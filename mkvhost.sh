@@ -169,36 +169,37 @@ echo $DIR'/logs/*.log {
 }' | tee $DIR/logrotate > /dev/null
 ln -s $DIR/logrotate /etc/logrotate.d/apache2-$SHORTNAME
 
-if [ -d /etc/awstats ] ; then
+echo '* awststs ...'
 
-	echo '* awststs ...'
-
-	echo 'Include "/etc/awstats/awstats.conf"
+echo 'Include "/etc/awstats/awstats.conf"
 SiteDomain="'$FQDN'"
 LogFile="'$DIR'/logs/access.log"
 LogFormat=1
 DirData="'$DIR'/awstats"
 HostAliases="'$FQDN' localhost 127.0.0.1"
 ' | tee $DIR/awstats.conf > /dev/null
-	ln -s $DIR/awstats.conf /etc/awstats/awstats.$SHORTNAME.conf
 
-	echo 'Include "/etc/awstats/awstats.conf"
+echo 'Include "/etc/awstats/awstats.conf"
 SiteDomain="'$FQDN'"
 LogFile="'$DIR'/logs/access-redirect.log"
 LogFormat=1
 DirData="'$DIR'/awstats"
 HostAliases="'$FQDN' localhost 127.0.0.1"
 ' | tee $DIR/awstats-redirect.conf > /dev/null
-	ln -s $DIR/awstats-redirect.conf /etc/awstats/awstats.$SHORTNAME-redirect.conf
 
-	#awstats crontab
-	echo $(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME' -update >/dev/null
+#awstats crontab
+echo $(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME' -update >/dev/null
 '$(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'-redirect.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME'-redirect -update >/dev/null' | tee $DIR/awstats-cron > /dev/null
+
+if [ ! -d /etc/awstats ] ; then
+	echo 'Warn: awstats not installed. conf files will be created but not linked.'
+else
+	ln -s $DIR/awstats.conf /etc/awstats/awstats.$SHORTNAME.conf
+	ln -s $DIR/awstats-redirect.conf /etc/awstats/awstats.$SHORTNAME-redirect.conf
 	ln -s $DIR/awstats-cron /etc/cron.d/awstats-$SHORTNAME
 
 	#remove awstats nested include
 	cat /etc/awstats/awstats.conf | sed -i -e 's/^Include/#Include/' /etc/awstats/awstats.conf
-
 fi
 
 echo '* enable site ...'
