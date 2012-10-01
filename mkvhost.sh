@@ -154,6 +154,10 @@ echo $DIR'/logs/*.log {
   rotate 52
   compress
   delaycompress
+  compresscmd     /bin/bzip2
+  compressoptions --best
+  uncompresscmd   /bin/bunzip2
+  compressext     .bz2
   notifempty
   create 644 root root
   sharedscripts
