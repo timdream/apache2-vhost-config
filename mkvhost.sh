@@ -4,9 +4,6 @@ DIR=$1
 SHORTNAME=$2
 FQDN=$3
 
-VHOSTPARM='*:80'
-#VHOSTPARM='*'
-
 if [ `whoami` != root ]; then
   echo 'Error: root only.'
   exit 1;
@@ -76,7 +73,7 @@ touch $DIR/logs/access-redirect.log
 echo '* vhost conf ...'
 
 #site script
-echo '<VirtualHost '$VHOSTPARM':80>
+echo '<VirtualHost *:80>
   ServerName '$FQDN'
   #ServerAlias '$FQDN'
   ServerAdmin nobody@'$FQDN'
@@ -111,7 +108,7 @@ echo '<VirtualHost '$VHOSTPARM':80>
 ln -s $DIR/vhost.conf /etc/apache2/sites-available/$SHORTNAME
 
 #redirection site script
-echo '<VirtualHost '$VHOSTPARM'>
+echo '<VirtualHost *:80>
 
   # redirect vhost that issue 301 redirection to the real site.
   # Remember to edit awstats-redirect.conf
