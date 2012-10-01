@@ -213,7 +213,4 @@ Please
 to load the config of the website gracefully.
 You might want to edit '$DIR'/vhost.conf before doing that,
 depends on your application configration.
-
-Regards,
-
-timdream'
+'
