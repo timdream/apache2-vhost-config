@@ -19,11 +19,11 @@
    Upon running, mkvhost.sh will:
 
    * create vhost directories and all conf files.
-   * Set up two virtual hosts "shortname" and "shortname-redirect". The later 
+   * Set up two virtual hosts "shortname" and "shortname-redirect". The later
      one is good for blind redirection, e.g. www.domain.tld -> domain.tld.
    * Set up logrotate, awstat and their corntab.
 
- * rmvhost.sh - remove conf file symbolic links of the vhost created by 
+ * rmvhost.sh - remove conf file symbolic links of the vhost created by
    mkvhost.sh.
 
    After running, to permentently delete the virtual host, do 'rm -R ./vhost/'
@@ -38,7 +38,7 @@
 
   Known issue:
 
-  * apache2 package changed virtual host setting from <VirtualHost *> to 
+  * apache2 package changed virtual host setting from <VirtualHost *> to
     <VirtualHost *:80> after version 2.2.9-8. Do modify mkvhost.sh accordingly
     BEFORE creating virtual hosts.
- 
+

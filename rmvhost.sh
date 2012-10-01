@@ -1,39 +1,39 @@
 #!/bin/bash
 
 if [ `whoami` != root ]; then
-	echo 'Error: root only.'
-	exit 1;
+  echo 'Error: root only.'
+  exit 1;
 fi
 
 if [ -z $1 ] || \
-	[ -z $2 ]; then
-	echo 'Usage: '$0' [Directory] [Shortname]'
-	exit 1;
+  [ -z $2 ]; then
+  echo 'Usage: '$0' [Directory] [Shortname]'
+  exit 1;
 fi
 
 # if [ ! -d $1 ] || \
-	# [ ! -d $1/logs ] || \
-	# [ ! -d $1/www ] || \
-	# [ ! -d $1/awstats ] || \
-	# [ ! -d $1/logs ] || \
-	# [ ! -e $1/awstats.conf ] || \
-	# [ ! -e $1/awstats-redirect.conf ] || \
-	# [ ! -e $1/awstats-cron ] || \
-	# [ ! -e $1/logrotate ] || \
-	# [ ! -e $1/vhost.conf ] || \
-	# [ ! -e $1/vhost-redirect.conf ] ; then
-	# echo 'Directory' $1 'does not appear to be a vhost dir made by makevhost.sh.'
-	# exit 1;
+  # [ ! -d $1/logs ] || \
+  # [ ! -d $1/www ] || \
+  # [ ! -d $1/awstats ] || \
+  # [ ! -d $1/logs ] || \
+  # [ ! -e $1/awstats.conf ] || \
+  # [ ! -e $1/awstats-redirect.conf ] || \
+  # [ ! -e $1/awstats-cron ] || \
+  # [ ! -e $1/logrotate ] || \
+  # [ ! -e $1/vhost.conf ] || \
+  # [ ! -e $1/vhost-redirect.conf ] ; then
+  # echo 'Directory' $1 'does not appear to be a vhost dir made by makevhost.sh.'
+  # exit 1;
 # fi
 
 # if [ ! -h /etc/apache2/sites-available/$2 ] || \
-	# [ ! -h /etc/apache2/sites-available/$2-redirect ] || \
-	# [ ! -h /etc/logrotate.d/apache2-$2 ] || \
-	# [ ! -h /etc/awstats/awstats.$2.conf ] || \
-	# [ ! -h /etc/awstats/awstats.$2-redirect.conf ] || \
-	# [ ! -h /etc/cron.d/awstats-$2 ] || ; then
-	# echo 'One of the symbolic link is missing, you must clean up yourself.'
-	# exit 1;
+  # [ ! -h /etc/apache2/sites-available/$2-redirect ] || \
+  # [ ! -h /etc/logrotate.d/apache2-$2 ] || \
+  # [ ! -h /etc/awstats/awstats.$2.conf ] || \
+  # [ ! -h /etc/awstats/awstats.$2-redirect.conf ] || \
+  # [ ! -h /etc/cron.d/awstats-$2 ] || ; then
+  # echo 'One of the symbolic link is missing, you must clean up yourself.'
+  # exit 1;
 # fi
 
 #FQDN=$(cat $1/vhost.conf | grep ServerName | awk '{ print $2 }')
@@ -65,7 +65,7 @@ a2dissite $2-redirect > /dev/null
 [ -h /etc/cron.d/awstats-$2 ] && rm /etc/cron.d/awstats-$2
 
 echo 'Done.
-Please 
+Please
    apache2ctl graceful
 to load the config of the website gracefully.
 '
