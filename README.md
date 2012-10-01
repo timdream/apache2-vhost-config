@@ -40,5 +40,5 @@ Recreate symbolic links.
 
   * The Debian `apache2` package changed default virtual host setting
   from `<VirtualHost *>` to `<VirtualHost *:80>` after version 2.2.9-8.
-  Do modify `mkvhost.sh` accordingly *BEFORE* creating virtual hosts.
-
+  If you are still running apache2 below that version (you really shouldn't),
+  you should modify `mkvhost.sh` accordingly *BEFORE* creating virtual hosts.

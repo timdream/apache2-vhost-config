@@ -76,7 +76,7 @@ touch $DIR/logs/access-redirect.log
 echo '* vhost conf ...'
 
 #site script
-echo '<VirtualHost '$VHOSTPARM'>
+echo '<VirtualHost '$VHOSTPARM':80>
   ServerName '$FQDN'
   #ServerAlias '$FQDN'
   ServerAdmin nobody@'$FQDN'
