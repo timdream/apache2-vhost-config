@@ -85,23 +85,18 @@ echo '<VirtualHost *:80>
     AllowOverride None
   </Directory>
   <Directory '$DIR'/www/>
-    Options FollowSymLinks ExecCGI
-    # Remove ExecCGI if you do not need php
+    Options FollowSymLinks
     AllowOverride All
-    Order allow,deny
-    allow from all
+    Require all granted
   </Directory>
-  <Directorymatch "^/.*/.(hg|svn|git)/">
-    Order deny,allow
-    Deny from all
-  </Directorymatch>
+
+  # Remove this line if you do not need php
+  ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:9000/'$DIR'/www/$1
 
   ErrorLog '$DIR'/logs/error.log
-
   # Possible values include: debug, info, notice, warn, error, crit,
   # alert, emerg.
   LogLevel warn
-
   CustomLog '$DIR'/logs/access.log combined
 
 </VirtualHost>' | tee $DIR/vhost.conf > /dev/null
@@ -126,17 +121,15 @@ echo '<VirtualHost *:80>
   <Directory '$DIR'/www/>
     Options FollowSymLinks
     AllowOverride All
-    Order allow,deny
-    allow from all
+    Require all granted
 
     RedirectMatch permanent ^/(.*)$ http://'$FQDN'/$DIR
   </Directory>
-  ErrorLog '$DIR'/logs/error-redirect.log
 
+  ErrorLog '$DIR'/logs/error-redirect.log
   # Possible values include: debug, info, notice, warn, error, crit,
   # alert, emerg.
   LogLevel warn
-
   CustomLog '$DIR'/logs/access-redirect.log combined
 
 </VirtualHost>' | tee $DIR/vhost-redirect.conf > /dev/null
