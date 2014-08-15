@@ -90,10 +90,6 @@ echo '<VirtualHost *:80>
     Order allow,deny
     allow from all
   </Directory>
-  <Directorymatch "^/.*/.(hg|svn|git)/">
-    Order deny,allow
-    Deny from all
-  </Directorymatch>
 
   # Remove this line if you do not need php
   ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:9000/'$DIR'/www/$1
