@@ -85,8 +85,7 @@ echo '<VirtualHost *:80>
     AllowOverride None
   </Directory>
   <Directory '$DIR'/www/>
-    Options FollowSymLinks ExecCGI
-    # Remove ExecCGI if you do not need php
+    Options FollowSymLinks
     AllowOverride All
     Order allow,deny
     allow from all
@@ -95,6 +94,9 @@ echo '<VirtualHost *:80>
     Order deny,allow
     Deny from all
   </Directorymatch>
+
+  # Remove this line if you do not need php
+  ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:9000/'$DIR'/www/$1
 
   ErrorLog '$DIR'/logs/error.log
 
