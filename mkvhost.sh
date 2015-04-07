@@ -160,7 +160,7 @@ echo $DIR'/logs/*.log {
     [ ! -d /etc/awstats ] || /usr/lib/cgi-bin/awstats.pl -update -config='$SHORTNAME'-redirect
   endscript
   postrotate
-    if [ -f /var/run/apache2.pid ]; then
+    if [ -f /var/run/apache2/apache2.pid ]; then
       /etc/init.d/apache2 restart > /dev/null
     fi
   endscript
