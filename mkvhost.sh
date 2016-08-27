@@ -69,6 +69,7 @@ mkdir -p $DIR/awstats
 mkdir -p $DIR/logs
 touch $DIR/logs/access.log
 touch $DIR/logs/access-redirect.log
+chown root:root $DIR $DIR/awstats $DIR/logs $DIR/logs/access.log $DIR/logs/access-redirect.log
 
 echo '* vhost conf ...'
 
