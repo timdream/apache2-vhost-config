@@ -76,7 +76,7 @@ echo '* vhost conf ...'
 echo '<VirtualHost *:80>
   ServerName '$FQDN'
   #ServerAlias '$FQDN'
-  ServerAdmin nobody@'$FQDN'
+  ServerAdmin webmaster@'$FQDN'
 
   DocumentRoot '$DIR'/www
 
@@ -90,7 +90,8 @@ echo '<VirtualHost *:80>
     Require all granted
   </Directory>
 
-  # Remove this line if you do not need php
+  # Remove this line if you do not need php,
+  # or if your PHP was not installed with FastCGI
   ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:9000/'$DIR'/www/$1
 
   ErrorLog '$DIR'/logs/error.log
@@ -108,9 +109,9 @@ echo '<VirtualHost *:80>
   # redirect vhost that issue 301 redirection to the real site.
   # Remember to edit awstats-redirect.conf
 
-  #ServerName '$FQDN'
-  #ServerAlias '$FQDN'
-  ServerAdmin nobody@'$FQDN'
+  #ServerName www.'$FQDN'
+  #ServerAlias '$FQDN'.
+  ServerAdmin webmaster@'$FQDN'
 
   DocumentRoot '$DIR'/www
 
@@ -123,7 +124,7 @@ echo '<VirtualHost *:80>
     AllowOverride All
     Require all granted
 
-    RedirectMatch permanent ^/(.*)$ http://'$FQDN'/$DIR
+    RedirectMatch permanent ^/(.*)$ http://'$FQDN'/$1
   </Directory>
 
   ErrorLog '$DIR'/logs/error-redirect.log
