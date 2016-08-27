@@ -101,6 +101,7 @@ echo '<VirtualHost *:80>
   CustomLog '$DIR'/logs/access.log combined
 
 </VirtualHost>' | tee $DIR/vhost.conf > /dev/null
+chown root:root $DIR/vhost.conf
 ln -s $DIR/vhost.conf /etc/apache2/sites-available/$SHORTNAME
 
 #redirection site script
@@ -134,6 +135,7 @@ echo '<VirtualHost *:80>
   CustomLog '$DIR'/logs/access-redirect.log combined
 
 </VirtualHost>' | tee $DIR/vhost-redirect.conf > /dev/null
+chown root:root $DIR/vhost-redirect.conf
 ln -s $DIR/vhost-redirect.conf /etc/apache2/sites-available/$SHORTNAME-redirect
 
 
@@ -162,6 +164,7 @@ echo $DIR'/logs/*.log {
     fi
   endscript
 }' | tee $DIR/logrotate > /dev/null
+chown root:root $DIR/logrotate
 ln -s $DIR/logrotate /etc/logrotate.d/apache2-$SHORTNAME
 
 echo '* awststs ...'
@@ -173,6 +176,7 @@ LogFormat=1
 DirData="'$DIR'/awstats"
 HostAliases="'$FQDN' localhost 127.0.0.1"
 ' | tee $DIR/awstats.conf > /dev/null
+chown root:root $DIR/awstats.conf
 
 echo 'Include "/etc/awstats/awstats.conf"
 SiteDomain="'$FQDN'"
@@ -181,13 +185,15 @@ LogFormat=1
 DirData="'$DIR'/awstats"
 HostAliases="'$FQDN' localhost 127.0.0.1"
 ' | tee $DIR/awstats-redirect.conf > /dev/null
+chown root:root $DIR/awstats-redirect.conf
 
 #awstats crontab
 echo $(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME' -update >/dev/null
 '$(date +%S)' * * * * root [ -x /usr/lib/cgi-bin/awstats.pl -a -f /etc/awstats/awstats.'$SHORTNAME'-redirect.conf ] && /usr/lib/cgi-bin/awstats.pl -config='$SHORTNAME'-redirect -update >/dev/null' | tee $DIR/awstats-cron > /dev/null
+chown root:root $DIR/awstats-cron
 
 if [ ! -d /etc/awstats ] ; then
-  echo 'Warn: awstats not installed. conf files will be created but not linked.'
+  echo 'Warning: awstats not installed. conf files will be created but not linked.'
 else
   ln -s $DIR/awstats.conf /etc/awstats/awstats.$SHORTNAME.conf
   ln -s $DIR/awstats-redirect.conf /etc/awstats/awstats.$SHORTNAME-redirect.conf
