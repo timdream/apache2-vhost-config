@@ -22,7 +22,7 @@ if [ ! -d $1 ] || \
   [ ! -e $1/logrotate ] || \
   [ ! -e $1/vhost.conf ] || \
   [ ! -e $1/vhost-redirect.conf ] ; then
-  echo 'Directory' $1 'does not appear to be a vhost dir made by makevhost.sh.'
+  echo 'Directory' $1 'does not appear to be a vhost dir made by mkvhost.sh.'
   exit 1;
 fi
 
@@ -42,8 +42,8 @@ To remove generated site, run rmvhost.sh.
 Press Ctrl+C to escape if incorrect.'
 read -p 'Enter to continue. <Enter or Ctrl+C>'
 
-ln -s $1/vhost.conf /etc/apache2/sites-available/$2
-ln -s $1/vhost-redirect.conf /etc/apache2/sites-available/$2-redirect
+ln -s $1/vhost.conf /etc/apache2/sites-available/$2.conf
+ln -s $1/vhost-redirect.conf /etc/apache2/sites-available/$2-redirect.conf
 ln -s $1/logrotate /etc/logrotate.d/apache2-$2
 if [ -d /etc/awstats ] ; then
   ln -s $1/awstats.conf /etc/awstats/awstats.$2.conf
