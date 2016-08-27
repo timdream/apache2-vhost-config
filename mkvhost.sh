@@ -103,7 +103,7 @@ echo '<VirtualHost *:80>
 
 </VirtualHost>' | tee $DIR/vhost.conf > /dev/null
 chown root:root $DIR/vhost.conf
-ln -s $DIR/vhost.conf /etc/apache2/sites-available/$SHORTNAME
+ln -s $DIR/vhost.conf /etc/apache2/sites-available/$SHORTNAME.conf
 
 #redirection site script
 echo '<VirtualHost *:80>
@@ -137,7 +137,7 @@ echo '<VirtualHost *:80>
 
 </VirtualHost>' | tee $DIR/vhost-redirect.conf > /dev/null
 chown root:root $DIR/vhost-redirect.conf
-ln -s $DIR/vhost-redirect.conf /etc/apache2/sites-available/$SHORTNAME-redirect
+ln -s $DIR/vhost-redirect.conf /etc/apache2/sites-available/$SHORTNAME-redirect.conf
 
 
 echo '* logrotate ...'

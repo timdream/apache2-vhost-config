@@ -57,8 +57,8 @@ read -p 'Enter to continue. <Enter or Ctrl+C>'
 a2dissite $2 > /dev/null
 a2dissite $2-redirect > /dev/null
 
-[ -h /etc/apache2/sites-available/$2 ] && rm /etc/apache2/sites-available/$2
-[ -h /etc/apache2/sites-available/$2-redirect ] && rm /etc/apache2/sites-available/$2-redirect
+[ -h /etc/apache2/sites-available/$2 ] && rm /etc/apache2/sites-available/$2.conf
+[ -h /etc/apache2/sites-available/$2-redirect ] && rm /etc/apache2/sites-available/$2-redirect.conf
 [ -h /etc/logrotate.d/apache2-$2 ] && rm /etc/logrotate.d/apache2-$2
 [ -h /etc/awstats/awstats.$2.conf ] && rm /etc/awstats/awstats.$2.conf
 [ -h /etc/awstats/awstats.$2-redirect.conf ] && rm /etc/awstats/awstats.$2-redirect.conf
