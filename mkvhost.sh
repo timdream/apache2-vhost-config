@@ -91,10 +91,6 @@ echo '<VirtualHost *:80>
     Require all granted
   </Directory>
 
-  # Remove this line if you do not need php,
-  # or if your PHP was not installed with FastCGI
-  ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:9000/'$DIR'/www/$1
-
   ErrorLog '$DIR'/logs/error.log
   # Possible values include: debug, info, notice, warn, error, crit,
   # alert, emerg.
