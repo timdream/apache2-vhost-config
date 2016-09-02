@@ -103,7 +103,6 @@ ln -s $DIR/vhost.conf /etc/apache2/sites-available/$SHORTNAME.conf
 
 #redirection site script
 echo '<VirtualHost *:80>
-
   # redirect vhost that issue 301 redirection to the real site.
   # Remember to edit awstats-redirect.conf
 
